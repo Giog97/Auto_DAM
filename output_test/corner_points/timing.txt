@@ -1,4 +1,4 @@
 Modalità: corner_points
 Numero immagini: 4
-Tempo totale: 472.57 secondi
-Tempo medio per immagine: 118.14 secondi
+Tempo totale: 109.86 secondi
+Tempo medio per immagine: 27.46 secondi

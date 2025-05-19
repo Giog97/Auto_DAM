@@ -1,4 +1,4 @@
 Modalità: 4grid_points
 Numero immagini: 4
-Tempo totale: 471.57 secondi
-Tempo medio per immagine: 117.89 secondi
+Tempo totale: 107.51 secondi
+Tempo medio per immagine: 26.88 secondi

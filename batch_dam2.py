@@ -30,17 +30,6 @@ def get_center_box(width, height):
     y0 = (height - h_box) // 2
     return [[x0, y0, x0 + w_box, y0 + h_box]]
 
-# Prende i bounding box che stanno ai bordi dell'immagine
-def get_corner_boxes(width, height):
-    w_box = width // 4
-    h_box = height // 4
-    return [
-        [0, 0, w_box, h_box],
-        [width - w_box, 0, width, h_box],
-        [0, height - h_box, w_box, height],
-        [width - w_box, height - h_box, width, height],
-    ]
-
 # Prende i 4 punti ai bordi dell'immagine
 def get_corner_points(width, height):
     return [
@@ -61,18 +50,42 @@ def get_9grid_points(width, height):
             points.append([x, y])
     return points
 
-# Prende 3 box centrati e leggermente spostati casualmente nell'immagine
-def get_random_centered_boxes(width, height, n=3):
-    """n box centrati con leggero offset casuale (per ora deterministico)"""
-    boxes = []
-    for i in range(n):
-        scale = 0.5 + 0.1 * i  # variazione deterministica tra 50% e 70% circa
-        w_box = int(width * scale / 2)
-        h_box = int(height * scale / 2)
-        x0 = (width - w_box) // 2 + (i * 5)
-        y0 = (height - h_box) // 2 + (i * 5)
-        boxes.append([x0, y0, x0 + w_box, y0 + h_box])
-    return boxes
+# Prende 1 box centrato e leggermente spostato casualmente nell'immagine
+def get_random_shifted_center_box(width, height, scale=0.6, max_offset_ratio=0.1):
+    """
+    Restituisce un box centrato con leggero offset casuale, 
+    senza uscire dai bordi dell'immagine.
+    """
+    # dimensioni del box
+    w_box = int(width * scale)
+    h_box = int(height * scale)
+
+    # massimo spostamento possibile (in pixel)
+    max_dx = int(width * max_offset_ratio)
+    max_dy = int(height * max_offset_ratio)
+
+    # spostamento casuale, positivo o negativo
+    dx = random.randint(-max_dx, max_dx)
+    dy = random.randint(-max_dy, max_dy)
+
+    # centro dell’immagine + offset
+    center_x = width // 2 + dx
+    center_y = height // 2 + dy
+
+    # calcolo box, tenendo conto dei bordi
+    x0 = max(center_x - w_box // 2, 0)
+    y0 = max(center_y - h_box // 2, 0)
+    x1 = min(x0 + w_box, width)
+    y1 = min(y0 + h_box, height)
+
+    # Ricorregge x0/y0 se il box è stato tagliato a destra/basso
+    x0 = x1 - w_box
+    y0 = y1 - h_box
+    x0 = max(x0, 0)
+    y0 = max(y0, 0)
+
+    return [x0, y0, x1, y1]
+
 
 # Prende i 4 punti agli angoli dell'immagine
 def get_edge_points(width, height):
@@ -115,10 +128,9 @@ modes = {
     "center_point": get_center_point,
     "4grid_points": get_4grid_points,
     "center_box": get_center_box,
-    "corner_boxes": get_corner_boxes,
     "corner_points": get_corner_points,
     "9grid_points": get_9grid_points,
-    "random_centered_boxes": get_random_centered_boxes,
+    "random_shifted_center_box": get_random_shifted_center_box,
     "edge_points": get_edge_points,
     "random_point": get_random_point,
     "random_5points": get_random_points,

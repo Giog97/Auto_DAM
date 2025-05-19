@@ -1,0 +1,4 @@
+Modalità: random_shifted_center_box
+Numero immagini: 4
+Tempo totale: 106.57 secondi
+Tempo medio per immagine: 26.64 secondi

@@ -1,4 +1,4 @@
 Modalità: center_point
 Numero immagini: 4
-Tempo totale: 485.02 secondi
-Tempo medio per immagine: 121.26 secondi
+Tempo totale: 109.25 secondi
+Tempo medio per immagine: 27.31 secondi

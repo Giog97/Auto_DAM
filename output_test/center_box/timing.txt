@@ -1,4 +1,4 @@
 Modalità: center_box
 Numero immagini: 4
-Tempo totale: 458.88 secondi
-Tempo medio per immagine: 114.72 secondi
+Tempo totale: 105.50 secondi
+Tempo medio per immagine: 26.38 secondi

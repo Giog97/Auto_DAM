@@ -1,4 +1,0 @@
-Modalità: corner_boxes
-Numero immagini: 4
-Tempo totale: 449.72 secondi
-Tempo medio per immagine: 112.43 secondi
