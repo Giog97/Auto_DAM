@@ -1,0 +1,4 @@
+Modalità: random_5points
+Numero immagini: 4
+Tempo totale: 455.05 secondi
+Tempo medio per immagine: 113.76 secondi

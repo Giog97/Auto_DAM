@@ -1,0 +1,4 @@
+Modalità: random_box
+Numero immagini: 4
+Tempo totale: 474.16 secondi
+Tempo medio per immagine: 118.54 secondi

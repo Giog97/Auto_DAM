@@ -1,0 +1,4 @@
+Modalità: 9grid_points
+Numero immagini: 4
+Tempo totale: 482.67 secondi
+Tempo medio per immagine: 120.67 secondi

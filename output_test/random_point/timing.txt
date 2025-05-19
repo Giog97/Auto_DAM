@@ -1,0 +1,4 @@
+Modalità: random_point
+Numero immagini: 4
+Tempo totale: 467.98 secondi
+Tempo medio per immagine: 117.00 secondi
