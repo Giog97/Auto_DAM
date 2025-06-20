@@ -24,11 +24,15 @@ def get_4grid_points(width, height):
 
 # Prende il bounding box centrale grande il 50% dell'immagine
 def get_center_box(width, height):
-    w_box = width // 2
-    h_box = height // 2
-    x0 = (width - w_box) // 2
-    y0 = (height - h_box) // 2
-    return [[x0, y0, x0 + w_box, y0 + h_box]]
+    w_box = int(width * 0.5)
+    h_box = int(height * 0.5)
+    center_x = width // 2
+    center_y = height // 2
+    x0 = center_x - w_box // 2
+    y0 = center_y - h_box // 2
+    x1 = x0 + w_box
+    y1 = y0 + h_box
+    return [[x0, y0, x1, y1]]
 
 # Prende i 4 punti ai bordi dell'immagine
 def get_corner_points(width, height):
