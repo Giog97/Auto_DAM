@@ -1,0 +1,5 @@
+Grid Level: 5
+Number of points: 36
+Number of images: 4
+Total time: 86.80 seconds
+Average time per image: 21.70 seconds

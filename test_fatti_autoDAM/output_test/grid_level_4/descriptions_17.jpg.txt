@@ -1,0 +1,9 @@
+=== Description 1 ===
+A rectangular block of watermelon with a dark green rind, featuring a circular cutout in the center. The top of the block has a small, round, green cucumber with a smooth surface. The block has a small, round, green cucumber on the right side and a small, round, green cucumber on the left side.
+
+=== Description 2 ===
+A rectangular block of watermelon with a dark green rind, featuring a circular cutout in the center. The top of the block has a circular slice of watermelon with a red interior and a green rind, positioned vertically. To the left of the block, there is a small, round, green watermelon piece.
+
+=== Description 3 ===
+A rectangular block of watermelon with a dark green rind, featuring a circular cutout in the center. The top of the block has a small, round, green watermelon slice with a red interior. To the left of the block, there is a small, round, green watermelon slice. To the right of the block, there is a small, round, green watermelon slice.
+
