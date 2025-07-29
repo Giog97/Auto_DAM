@@ -1,9 +1,9 @@
-=== Description 1 ===
-A tall, rectangular skyscraper with a grid-like facade composed of numerous evenly spaced windows. The building has a uniform pattern of square windows, each with a dark frame, arranged in a consistent, repetitive manner across its entire visible surface.
+=== Conservative ===
+A modern skyscraper with a grid-like facade composed of numerous rectangular windows arranged in a uniform pattern. The building has a flat roof and the windows are evenly spaced across its height. The structure appears to be made of a dark material, possibly glass or metal, with a consistent, repetitive design.
 
-=== Description 2 ===
-A modern skyscraper with a grid-like facade composed of numerous rectangular windows arranged in a uniform pattern. The building has a sleek, dark exterior with a consistent, repetitive design across its visible surface.
-
-=== Description 3 ===
+=== Balanced ===
 A tall, rectangular skyscraper with a grid-like facade composed of numerous evenly spaced windows. The building has a uniform pattern of square windows, each with a dark frame, creating a repetitive and structured appearance. The structure is predominantly gray in color.
+
+=== Creative ===
+A tall, rectangular skyscraper with a grid-like facade composed of numerous evenly spaced windows. The building has a uniform pattern of square windows, each framed by light-colored borders. The structure is predominantly dark in color, with a consistent texture across its entire visible surface.
 

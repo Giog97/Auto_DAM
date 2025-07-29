@@ -1,9 +1,9 @@
-=== Description 1 ===
+=== Conservative ===
 A rectangular, light gray cushion with a smooth texture and slightly rounded edges.
 
-=== Description 2 ===
+=== Balanced ===
 A rectangular, light gray cushion with a smooth texture and slightly rounded edges.
 
-=== Description 3 ===
-A rectangular, flat-screen television with a thin, light-colored bezel. The screen is off, displaying a blank, light gray surface. The television is mounted on a wall with a visible mounting bracket at the top center.
+=== Creative ===
+A large, rectangular, white canvas with a smooth surface and slightly rounded corners.
 

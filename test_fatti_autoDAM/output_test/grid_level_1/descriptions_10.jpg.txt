@@ -1,9 +1,9 @@
-=== Description 1 ===
-The skyline features a variety of skyscrapers with different architectural styles. The tallest building has a sleek, modern design with a pointed top and a spire. Adjacent to it is a building with a unique, curved structure. To the left, there is a building with a flat roof and a series of vertical lines. Further left, there is a building with a grid-like pattern of windows. On the far left, there is a building with a distinctive, angular design.
+=== Conservative ===
+The skyline features a variety of skyscrapers with different architectural styles. The tallest building has a sleek, modern design with a pointed top and a glass facade. Adjacent to it is a slightly shorter building with a more traditional rectangular shape and a flat roof. To the left, there is a building with a unique, curved structure and a glass exterior. Further left, there is a building with a distinctive, angular design and a glass facade. On the far left, there is a building with a flat roof and a glass exterior. The buildings are closely packed, creating a dense urban landscape.
 
-=== Description 2 ===
-The skyline features a variety of skyscrapers with different architectural styles. The tallest building has a sleek, modern design with a pointed top and a spire. Adjacent to it is a slightly shorter building with a flat roof and a grid-like pattern of windows. To the left, there is a building with a unique, curved structure and a series of horizontal lines. Further left, there is a building with a distinctive, angular design and a series of vertical lines. The buildings are closely packed, creating a dense urban landscape.
+=== Balanced ===
+The skyline features a variety of skyscrapers with different architectural styles. The tallest building has a sleek, modern design with a pointed top and a glass facade. Adjacent to it is a slightly shorter building with a more traditional rectangular shape and a flat roof. Further to the right, there is a building with a unique, curved structure and a glass exterior. The buildings are closely packed, creating a dense urban landscape.
 
-=== Description 3 ===
-The skyline features a variety of skyscrapers with different architectural styles. The tallest building has a sleek, modern design with a pointed top and a glass facade. Adjacent to it is a shorter building with a more traditional rectangular shape and a flat roof. Further to the right, there is a building with a unique, curved structure and a glass exterior. The buildings are closely packed, creating a dense urban landscape.
+=== Creative ===
+The sky is a clear, bright blue with a few scattered, fluffy white clouds. The clouds are primarily located towards the left side of the image, with one larger cloud near the top left corner and smaller clouds dispersed below it. The right side of the sky is mostly clear with a few faint, wispy clouds.
 

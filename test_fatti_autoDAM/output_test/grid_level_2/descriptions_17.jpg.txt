@@ -1,9 +1,9 @@
-=== Description 1 ===
-A rectangular cucumber with a dark green, vertically striped skin, featuring a circular cutout in the center. Above the cucumber, there is a small, round, green cucumber with a smooth surface. To the left of the cucumber, there is a small, green cucumber with a smooth surface. To the right of the cucumber, there is a small, round, green cucumber with a smooth surface. Above the cucumber, there is a circular slice of red tomato with a green stem.
+=== Conservative ===
+A rectangular cucumber with a dark green, vertically striped skin, featuring a small, round, green cucumber slice at the bottom left, a larger circular slice in the center, and a smaller circular slice at the top right. Above the rectangular cucumber, there is a green, dome-shaped object resembling a camera lens, and a red, circular slice with a star-like pattern in the center, resembling a camera lens cap.
 
-=== Description 2 ===
-A rectangular cucumber with a dark green, bumpy skin, featuring a large circular cutout in the center. Above the cucumber, there is a smaller circular cutout with a star-shaped pattern inside. To the left of the cucumber, there is a small, round, green cucumber with a smooth surface. To the right of the cucumber, there is a small, round, green cucumber with a smooth surface.
+=== Balanced ===
+A green cucumber with a smooth, glossy surface, featuring a circular cutout revealing the inner flesh and seeds. The cucumber has a cylindrical shape with a slightly tapered end.
 
-=== Description 3 ===
-A rectangular cucumber with a dark green, textured skin, featuring a series of horizontal ridges. On top of the cucumber, there is a circular slice of tomato with a vibrant red interior and a pattern of seeds. To the left of the tomato slice, there is a small, round, green cucumber slice with a smooth surface. On the right side of the cucumber, there is a smaller, round, green cucumber slice with a smooth surface.
+=== Creative ===
+A rectangular cucumber with a dark green, striped skin, featuring a large, circular slice of cucumber at the center, a smaller circular slice to the right, and a small round piece to the bottom right. Above these, there is a small, round piece of cucumber with a green stem, and to the left of the round piece, there is a small, green, bulbous object.
 

@@ -1,9 +1,9 @@
-=== Description 1 ===
-The background is a gradient of soft pastel colors, transitioning from a light blue at the top to a gentle pinkish hue towards the bottom. The gradient is smooth and even, creating a serene and calm atmosphere.
-
-=== Description 2 ===
+=== Conservative ===
 The background is a gradient of soft pastel colors, transitioning from a light blue at the top to a gentle pinkish hue towards the bottom. The gradient is smooth and evenly distributed across the entire visible area.
 
-=== Description 3 ===
+=== Balanced ===
 The background is a gradient of soft pastel colors, transitioning from a light blue at the top to a gentle pinkish hue towards the bottom.
+
+=== Creative ===
+A clear blue sky with a smooth gradient, transitioning from a slightly deeper blue at the top to a lighter blue towards the bottom.
 

@@ -19,6 +19,25 @@ class DAMProcessor:
     """
     Classe che serve per inzializzare DAM e SAM model utili per ottenere caption dalle immagini
     """
+    # Define the presets at class level. Class variable that permit to reproduce experiment obtaining different caption 
+    PRESET_PARAMS = {
+        'conservative': {
+            'temperature': 0.2, #0.2, 0.5
+            'top_p': 0.5, #0.5, 0.8
+            'max_new_tokens': 512
+        },
+        'balanced': {
+            'temperature': 0.6, #0.6, 0.75
+            'top_p': 0.75, #0.75, 0.9
+            'max_new_tokens': 512
+        },
+        'creative': {
+            'temperature': 1.0,
+            'top_p': 0.95,
+            'max_new_tokens': 512
+        }
+    }
+
     def __init__(self, device=None):
         self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self._initialize_models()
@@ -51,8 +70,7 @@ class DAMProcessor:
         masks = self.sam_processor.image_processor.post_process_masks(
             outputs.pred_masks.cpu(),
             inputs["original_sizes"].cpu(),
-            inputs["reshaped_input_sizes"].cpu()
-        )[0][0]
+            inputs["reshaped_input_sizes"].cpu())[0][0]
         scores = outputs.iou_scores[0, 0]
 
         mask_selection_index = scores.argmax()
@@ -102,35 +120,48 @@ class DAMProcessor:
         self, 
         image, 
         mask, 
-        num_descriptions=3, # genera 3 descrizioni 
+        num_descriptions=3,
         base_prompt='<image>\nDescribe the masked region in detail.',
-        temperature_range=(0.2, 0.7),
-        top_p_range=(0.5, 0.9) ) -> List[str]:
-        """Generate multiple varied descriptions for the same image/mask"""
+        preset='balanced'  # Default to balanced preset
+        ) -> List[str]:
+        """Generate multiple descriptions using predefined parameter presets"""
         mask_img = Image.fromarray((mask * 255).astype(np.uint8))
         descriptions = []
         
-        for i in range(num_descriptions):
-            # Vary parameters for each description
-            current_temp = random.uniform(*temperature_range)
-            current_top_p = random.uniform(*top_p_range)
-            
+        # Get the preset parameters
+        params = self.PRESET_PARAMS[preset]
+        
+        for _ in range(num_descriptions):
             description = []
             for token in self.dam.get_description(
                 image,
                 mask_img,
                 base_prompt,
                 streaming=True,
-                temperature=current_temp,
-                top_p=current_top_p,
-                num_beams=1,
-                max_new_tokens=512
+                **params  # Unpack all preset parameters
             ):
                 description.append(token)
             
             descriptions.append(''.join(description))
         
         return descriptions
+    
+    def generate_description_with_preset(self, image, mask, preset='balanced'):
+        """Generate single description using a specific preset"""
+        mask_img = Image.fromarray((mask * 255).astype(np.uint8))
+        params = self.PRESET_PARAMS[preset]
+        
+        description = []
+        for token in self.dam.get_description(
+            image,
+            mask_img,
+            '<image>\nDescribe the masked region in detail.',
+            streaming=True,
+            **params
+        ):
+            description.append(token)
+        
+        return ''.join(description)
 
 def generate_grid_points(width: int, height: int, level: int) -> List[List[int]]:
     """Generate grid points based on level of detail"""
@@ -155,20 +186,22 @@ def process_single_image(
     image_path: str, 
     output_path: str, 
     dam_processor: DAMProcessor, 
-    level: int,
-    num_descriptions=3 ) -> List[str]:
-    """Process single image with DAM at specified grid level, returning multiple descriptions"""
+    level: int
+    ) -> dict:
+    """Process single image and return descriptions for ALL presets"""
     with Image.open(image_path) as img:
         width, height = img.size
         input_points = generate_grid_points(width, height, level)
+        mask = dam_processor.apply_sam(img, input_points=[input_points], input_labels=[[1]*len(input_points)])
         
-        # Get mask from SAM
-        mask = dam_processor.apply_sam(img, input_points=[input_points], input_labels=[[1]*len(input_points)]) # All points are foreground (1)
+        # Generate descriptions for all presets
+        descriptions = {
+            'conservative': dam_processor.generate_description_with_preset(img, mask, 'conservative'),
+            'balanced': dam_processor.generate_description_with_preset(img, mask, 'balanced'),
+            'creative': dam_processor.generate_description_with_preset(img, mask, 'creative')
+        }
         
-        # Generate multiple descriptions
-        descriptions = dam_processor.generate_multiple_descriptions(img, mask, num_descriptions)
-        
-        # Save visualization (using first description for filename)
+        # Save visualization
         img_np = np.asarray(img).astype(float) / 255.0
         img_with_contour = dam_processor.add_contour(img_np, mask, input_points=[input_points])
         Image.fromarray((img_with_contour * 255).astype(np.uint8)).save(output_path)
@@ -179,10 +212,11 @@ def process_image_folder(
     image_folder: str,
     output_root: str,
     dam_processor: DAMProcessor,
-    max_level: int = 4, # è come se fossero 5 livelli perchè sono 4 livelli + 1 livello 0
-    num_descriptions: int = 3, # numero di descrizioni per livello
-    image_extensions: Tuple[str] = ('.jpg', '.jpeg', '.png', '.bmp') ) -> None:
-    """Process all images with multiple descriptions per grid level"""
+    max_level: int = 4
+    ) -> dict:
+    """Process all images with ALL presets for each grid level"""
+    all_descriptions = {}  # {filename: {level: {preset: description}}}
+    
     for level in range(max_level + 1):
         mode_name = f"grid_level_{level}"
         print(f"\n== Processing Grid Level: {level} ==")
@@ -190,42 +224,33 @@ def process_image_folder(
         output_folder = os.path.join(output_root, mode_name)
         os.makedirs(output_folder, exist_ok=True)
 
-        start_time = time.time()
-        image_count = 0
-
         for filename in os.listdir(image_folder):
-            if filename.lower().endswith(image_extensions):
-                image_count += 1
+            if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
                 image_path = os.path.join(image_folder, filename)
+                base_name = os.path.splitext(filename)[0]
+                
+                if base_name not in all_descriptions:
+                    all_descriptions[base_name] = {}
+                
                 output_image_path = os.path.join(output_folder, f"out_{filename}")
                 text_output_path = os.path.join(output_folder, f"descriptions_{filename}.txt")
 
                 print(f"Processing {filename} with {((level + 1) ** 2) if level > 0 else 1} points...")
 
-                # Get multiple descriptions
+                # Get descriptions for all presets
                 descriptions = process_single_image(
-                    image_path, output_image_path, dam_processor, level, num_descriptions
+                    image_path, output_image_path, dam_processor, level
                 )
-
-                # Save all descriptions together
+                
+                # Store in the main dictionary
+                all_descriptions[base_name][level] = descriptions
+                
+                # Save to text file
                 with open(text_output_path, "w", encoding="utf-8") as f:
-                    for i, desc in enumerate(descriptions, 1):
-                        f.write(f"=== Description {i} ===\n{desc}\n\n")
-
-        total_time = time.time() - start_time
-        avg_time = total_time / image_count if image_count > 0 else 0
-        
-        with open(os.path.join(output_folder, "timing.txt"), "w", encoding="utf-8") as f:
-            f.write(f"Grid Level: {level}\n")
-            f.write(f"Number of points: {(level + 1) ** 2 if level > 0 else 1}\n")
-            f.write(f"Number of images: {image_count}\n")
-            f.write(f"Total time: {total_time:.2f} seconds\n")
-            f.write(f"Average time per image: {avg_time:.2f} seconds\n")
-
-        print(f"\nCompleted level {level}:")
-        print(f"- Processed {image_count} images")
-        print(f"- Total time: {total_time:.2f} seconds")
-        print(f"- Average time per image: {avg_time:.2f} seconds")
+                    for preset, desc in descriptions.items():
+                        f.write(f"=== {preset.capitalize()} ===\n{desc}\n\n")
+    
+    return all_descriptions
 
 def process_image_folder_to_dict(
     image_folder: str,
@@ -279,80 +304,32 @@ def process_image_folder_to_dict(
     
     return descriptions_dict
 
-def process_image_folder_to_dict_with_visualization(...):
-    """Version that also saves visualizations"""
-    descriptions_dict = {}
-    
-    for level in range(max_level + 1):
-        output_folder = os.path.join(output_root, f"grid_level_{level}")
-        os.makedirs(output_folder, exist_ok=True)
-        
-        for filename in os.listdir(image_folder):
-            if filename.lower().endswith(image_extensions):
-                image_path = os.path.join(image_folder, filename)
-                
-                # Get base filename without extension
-                base_name = os.path.splitext(filename)[0]
-                
-                # Initialize list if this is the first level for this image
-                if base_name not in descriptions_dict:
-                    descriptions_dict[base_name] = []
-                
-                # Process image and get descriptions
-                with Image.open(image_path) as img:
-                    width, height = img.size
-                    input_points = generate_grid_points(width, height, level)
-                    
-                    # Get mask from SAM
-                    mask = dam_processor.apply_sam(
-                        img, 
-                        input_points=[input_points], 
-                        input_labels=[[1]*len(input_points)]
-                    )
-                    
-                    # Generate descriptions for this level
-                    descriptions = dam_processor.generate_multiple_descriptions(
-                        img, mask, num_descriptions
-                    )
-                    
-                    # Add to dictionary with level info
-                    for desc in descriptions:
-                        descriptions_dict[base_name].append(
-                            f"Level {level} ({(level+1)**2 if level>0 else 1} points): {desc}"
-                        )
-                        
-        img_with_contour = dam_processor.add_contour(...)
-        Image.fromarray(...).save(os.path.join(output_folder, f"out_{filename}"))
-    
-    return descriptions_dict
-
 def main():
-    """Main function with configurable number of descriptions"""
     config = {
         "image_folder": "test_fatti_autoDAM/images_test",
         "output_root": "test_fatti_autoDAM/output_test",
-        "max_level": 4, # è come se fossero 5 livelli perchè sono 4 livelli + 1 livello 0
-        "num_descriptions": 3  # Number of varied descriptions per image (per level)
+        "max_level": 4
     }
-
-    for path in [config["image_folder"]]:
-        if not os.path.exists(path):
-            raise FileNotFoundError(f"Path does not exist: {path}")
 
     print("Initializing models...")
     dam_processor = DAMProcessor()
 
     print("\nStarting DAM grid point sampling experiment...")
-    #process_image_folder(image_folder=config["image_folder"], output_root=config["output_root"], dam_processor=dam_processor, max_level=config["max_level"], num_descriptions=config["num_descriptions"])
-    # Get the descriptions dictionary
-    descriptions_dict = process_image_folder_to_dict(
+    results = process_image_folder(
         image_folder=config["image_folder"],
+        output_root=config["output_root"],
         dam_processor=dam_processor,
-        max_level=config["max_level"],
-        num_descriptions=config["num_descriptions"]
+        max_level=config["max_level"]
     )
-    print(f"Description from DAM: {descriptions_dict}")
     
+    # Example of accessing results:
+    for filename, level_data in results.items():
+        print(f"\nDescriptions for {filename}:")
+        for level, presets in level_data.items():
+            print(f"  Level {level}:")
+            for preset, desc in presets.items():
+                print(f"    {preset}: {desc}")  # Print the descriptions
+
     print("\nExperiment completed!")
 
 if __name__ == "__main__":
