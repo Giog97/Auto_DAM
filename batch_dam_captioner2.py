@@ -76,23 +76,7 @@ class DAMProcessor:
         mask_selection_index = scores.argmax()
         return masks[mask_selection_index].numpy()
     
-    def generate_description(self, image, mask, prompt='<image>\nDescribe the masked region in detail.'):
-        """Generate description using DAM"""
-        mask_img = Image.fromarray((mask * 255).astype(np.uint8))
-        description = []
-        
-        for token in self.dam.get_description(
-            image,
-            mask_img,
-            prompt,
-            streaming=True,
-            temperature=0.2, # controls randomness (you can increase it to get more variety)
-            top_p=0.5, # this enables nucleus sampling
-            num_beams=1, # disables beam search (important!)
-            max_new_tokens=512 ):
-            description.append(token)
-            
-        return ''.join(description)
+    # Rimosso generate_description, tanto adesso ho generate_description_with_presets
     
     def add_contour(self, img, mask, input_points=None, input_boxes=None):
         """Add visualization contours to image"""
@@ -155,7 +139,7 @@ class DAMProcessor:
         for token in self.dam.get_description(
             image,
             mask_img,
-            '<image>\nDescribe the masked region in detail.',
+            '<image>\nDescribe the masked region in detail.', # prompt base
             streaming=True,
             **params
         ):
@@ -252,57 +236,6 @@ def process_image_folder(
     
     return all_descriptions
 
-def process_image_folder_to_dict(
-    image_folder: str,
-    dam_processor: DAMProcessor,
-    max_level: int = 4,
-    num_descriptions: int = 3,
-    image_extensions: Tuple[str] = ('.jpg', '.jpeg', '.png', '.bmp')) -> dict:
-    """
-    Process all images and return a dictionary with:
-    - Key: image filename (without extension)
-    - Value: list of all descriptions across all levels for that image
-    """
-    descriptions_dict = {}
-    
-    for level in range(max_level + 1):
-        print(f"\nProcessing Grid Level: {level}")
-        
-        for filename in os.listdir(image_folder):
-            if filename.lower().endswith(image_extensions):
-                image_path = os.path.join(image_folder, filename)
-                
-                # Get base filename without extension
-                base_name = os.path.splitext(filename)[0]
-                
-                # Initialize list if this is the first level for this image
-                if base_name not in descriptions_dict:
-                    descriptions_dict[base_name] = []
-                
-                # Process image and get descriptions
-                with Image.open(image_path) as img:
-                    width, height = img.size
-                    input_points = generate_grid_points(width, height, level)
-                    
-                    # Get mask from SAM
-                    mask = dam_processor.apply_sam(
-                        img, 
-                        input_points=[input_points], 
-                        input_labels=[[1]*len(input_points)]
-                    )
-                    
-                    # Generate descriptions for this level
-                    descriptions = dam_processor.generate_multiple_descriptions(
-                        img, mask, num_descriptions
-                    )
-                    
-                    # Add to dictionary with level info
-                    for desc in descriptions:
-                        descriptions_dict[base_name].append(
-                            f"Level {level} ({(level+1)**2 if level>0 else 1} points): {desc}"
-                        )
-    
-    return descriptions_dict
 
 def main():
     config = {
