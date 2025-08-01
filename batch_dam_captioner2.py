@@ -100,36 +100,8 @@ class DAMProcessor:
 
         return img
 
-    def generate_multiple_descriptions(
-        self, 
-        image, 
-        mask, 
-        num_descriptions=3,
-        base_prompt='<image>\nDescribe the masked region in detail.',
-        preset='balanced'  # Default to balanced preset
-        ) -> List[str]:
-        """Generate multiple descriptions using predefined parameter presets"""
-        mask_img = Image.fromarray((mask * 255).astype(np.uint8))
-        descriptions = []
+    # rimosso generate_multiple_descriptions()
         
-        # Get the preset parameters
-        params = self.PRESET_PARAMS[preset]
-        
-        for _ in range(num_descriptions):
-            description = []
-            for token in self.dam.get_description(
-                image,
-                mask_img,
-                base_prompt,
-                streaming=True,
-                **params  # Unpack all preset parameters
-            ):
-                description.append(token)
-            
-            descriptions.append(''.join(description))
-        
-        return descriptions
-    
     def generate_description_with_preset(self, image, mask, preset='balanced'):
         """Generate single description using a specific preset"""
         mask_img = Image.fromarray((mask * 255).astype(np.uint8))
